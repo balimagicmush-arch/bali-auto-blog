@@ -105,48 +105,6 @@ def generate_blog(articles):
         return "記事生成エラー", str(e)
 
 
-# ========= WordPress投稿 =========
-def post_to_wordpress(title, content):
-    print("🚀 WordPress投稿開始")
-
-    url = f"{WP_URL}/wp-json/wp/v2/posts"
-
-    data = {
-        "title": title,
-        "content": content,
-        "status": "draft"
-    }
-
-    try:
-        res = requests.post(
-            url,
-            json=data,
-            auth=(WP_USER, WP_APP_PASSWORD),
-            timeout=30
-        )
-
-        print("ステータスコード:", res.status_code)
-        print("レスポンス:", res.text)
-
-        if res.status_code == 201:
-            print("✅ 投稿成功")
-        else:
-            print("⚠️ 投稿失敗")
-
-    except Exception as e:
-        print("❌ 投稿エラー:", e)
-
-
-# ========= Markdown保存 =========
-def save_markdown(title, content):
-    print("💾 Markdown保存")
-
-    today = datetime.datetime.now().strftime("%Y-%m-%d")
-
-    with open("summary.md", "w", encoding="utf-8") as f:
-        f.write(f"# {title}\n\n{content}")
-
-    print("✅ 保存完了")
 
 
 # ========= メイン =========
