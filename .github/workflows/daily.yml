@@ -1,0 +1,33 @@
+name: Auto Blog
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # 日本時間6時
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - run: python main.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+
+      - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add summary.md
+          git commit -m "auto update" || echo "skip"
+          git push
