@@ -104,7 +104,24 @@ def generate_blog(articles):
         print("❌ AIエラー:", e)
         return "記事生成エラー", str(e)
 
+def save_markdown(title, content):
+    print("📝 summary.md作成中")
 
+    date = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    md = f"""# {title}
+
+📅 {date}
+
+---
+
+{content}
+"""
+
+    with open("summary.md", "w", encoding="utf-8") as f:
+        f.write(md)
+
+    print("✅ summary.md保存完了")
 
 
 # ========= メイン =========
