@@ -1,8 +1,12 @@
 name: Auto Blog
 on:
   schedule:
-    - cron: '0 21 * * *'  # 日本時間6時
+    - cron: '0 21 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
   run:
     runs-on: ubuntu-latest
