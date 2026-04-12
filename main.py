@@ -80,7 +80,8 @@ def generate_blog(articles):
 
 def save_markdown(title, content):
     print("📝 summary.md作成中")
-    date = datetime.datetime.now().strftime("%Y-%m-%d")
+    jst = datetime.timezone(datetime.timedelta(hours=9))
+    date = datetime.datetime.now(jst).strftime("%Y-%m-%d")
     md = f"# {title}\n📅 {date}\n\n---\n\n{content}\n"
     with open("summary.md", "w", encoding="utf-8") as f:
         f.write(md)
