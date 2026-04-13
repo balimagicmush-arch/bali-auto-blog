@@ -28,7 +28,7 @@ def fetch_articles():
             if "published_parsed" not in entry:
                 continue
             published = datetime.datetime(*entry.published_parsed[:6])
-            if (now - published).total_seconds() <= 86400:
+            if (now - published).total_seconds() <= 259200:
                 articles.append({
                     "title": entry.title,
                     "summary": entry.get("summary", "")
@@ -44,19 +44,35 @@ def fetch_articles():
 def generate_blog(articles):
     print("🤖 AI記事生成開始")
     if not articles:
-        return "本日のバリ島ニュースはありません", "本日は過去24時間以内のニュースは確認されませんでした。"
+        return (
+        "【最新】バリ島の観光・治安・経済まとめ",
+        "本日は大きなニュースはありませんが、バリ島の最新動向として観光・治安・経済の基本情報を解説します。"
+    )
     text = "\n\n".join([f"{a['title']}\n{a['summary']}" for a in articles])
     prompt = f"""
-あなたはプロのSEOブロガーです。
-以下のニュースから日本人向けのブログ記事を作成してください。
+あなたは月間10万PVを稼ぐプロのSEOブロガーです。
 
-# 条件
-・タイトル付き
-・見出し構成（H2, H3）
-・PREP法
-・観光 / 治安 / 経済で整理
-・読みやすく
+以下のニュースをもとに、
+検索上位を狙うブログ記事を作成してください。
+
+【テーマ】
+バリ島の治安・観光・経済の最新状況
+
+【必須条件】
+・SEOタイトル（32文字前後）
+・導入文（検索意図に共感）
+・結論を最初に書く（PREP法）
+・H2、H3で構成
+・ニュース要約＋独自解説
+・日本人旅行者向け
+・不安を解消する内容
 ・最後にまとめ
+
+【重要】
+・ただの要約は禁止
+・「なぜ？どうなる？」を解説する
+・以下のキーワードを自然に含める
+（バリ島 治安 / バリ島 危険 / バリ島 最新情報）
 
 ニュース:
 {text}
@@ -71,7 +87,10 @@ def generate_blog(articles):
             temperature=0.5
         )
         content = res.choices[0].message.content
-        title = content.split("\n")[0].replace("#", "").strip()
+        jst = datetime.timezone(datetime.timedelta(hours=9))
+date = datetime.datetime.now(jst).strftime("%Y年%m月%d日")
+
+title = f"【{date}最新】バリ島の治安・観光・経済まとめ"
         print("✅ AI生成成功")
         return title, content
     except Exception as e:
@@ -83,6 +102,7 @@ def save_markdown(title, content):
     jst = datetime.timezone(datetime.timedelta(hours=9))
     date = datetime.datetime.now(jst).strftime("%Y-%m-%d")
     md = f"# {title}\n📅 {date}\n\n---\n\n{content}\n"
+md += f"\n\n最終更新: {datetime.datetime.now()}\n"
     with open("summary.md", "w", encoding="utf-8") as f:
         f.write(md)
     print("✅ summary.md保存完了")
