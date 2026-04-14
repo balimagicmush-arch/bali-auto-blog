@@ -20,9 +20,8 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "github-actions"
-          git pull origin main  
-          git add summary.md
-          git commit -m "auto update" || echo "skip"
-          git push
+         git config --local user.email "action@github.com"
+         git config --local user.name "github-actions"
+         git add summary.md
+         git commit -m "auto update" || echo "skip"
+         git push --force
