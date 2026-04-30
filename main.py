@@ -106,7 +106,7 @@ def generate_blog(articles):
         print("✅ AI生成成功")
         return title, content
 
-    except Exception as e:
+ 　　   except Exception as e:
         print("❌ AIエラー:", e)
         return "記事生成エラー", str(e)
 
